@@ -7,7 +7,7 @@
 
 ## Features
 
-1. **Get Country Code**
+1. **Get Country Code** - `/country/:country_code/`
     - Blah.
 
 1. **Performance**
