@@ -50,4 +50,6 @@ pub fn get_country(country_code:&str) -> &str {
     // STOPPED AT DOUBLE DIGITS, ADD THE REST USING THIS WEBSITE
     // https://countrycode.org/
 
+    return "";
+
 }

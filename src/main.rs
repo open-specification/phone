@@ -33,9 +33,32 @@ fn bad_format() -> response::Response {
 
 fn get_country(request_data:request::Request) -> response::Response {
 
+    // Get the Country Code from the Path
+    let request_parts: Vec<&str> = request_data.path.split('/').collect();
+    if request_parts.len() < 3 { return bad_format(); }
+    let country_code:&str = request_parts[2];
+    if country_code.len() == 0 { return bad_format(); }
     
+    // Get the Country Code
+    let country_name = phone::get_country(country_code);
 
-    return bad_format();
+    // Check if Country Code not Found
+    if country_name == "" {
+
+        return response::Response {
+            response_code: 404,
+            body: ("Country Not Found.".to_string()),
+            headers: HashMap::from([("Content-Length".to_string(), "Country Not Found.".len().to_string()), ("Content-Type".to_string(), "text/html".to_string())])
+        };
+
+    }
+
+    // Return the Country Name
+    return response::Response {
+        response_code: 200,
+        body: (country_name.to_string()),
+        headers: HashMap::from([("Content-Length".to_string(), country_name.len().to_string()), ("Content-Type".to_string(), "text/html".to_string())])
+    };
 
 }
 
