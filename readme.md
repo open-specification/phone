@@ -7,6 +7,37 @@
 
 ## Features
 
+<table>
+<tr>
+<td>
+
+```HTTP
+GET /country/1 HTTP/1.1
+Accept: text/html
+
+
+
+```
+
+</td>
+<td>
+
+```HTTP
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 24
+
+United States of America
+
+```
+
+</td>
+</tr>
+</table>
+
+1. **Get Country Code**
+    - Blah.
+
 1. **Performance**
     - The power of the Rust Programming Language enables this module to have sub-millisecond response times. Speed may vary depending on your network connection, but the code itself will never be the performance bottleneck.
 
