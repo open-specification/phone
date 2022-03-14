@@ -31,6 +31,28 @@ fn bad_format() -> response::Response {
 
 }
 
+fn get_e164_format(request_data:request::Request) -> response::Response {
+
+    // Get the Country Name and Phone Number from the Path
+    let request_parts: Vec<&str> = request_data.path.split('/').collect();
+    if request_parts.len() < 4 { return bad_format(); }
+    let country_name:&str = request_parts[2];
+    if country_name.len() == 0 { return bad_format(); }
+    let phone_number:&str = request_parts[3];
+    if phone_number.len() == 0 { return bad_format(); }
+    
+    // Get the Formatted Number
+    let formatted_number = phone::e164_format(country_name, phone_number);
+
+    // Return the Country Name
+    return response::Response {
+        response_code: 200,
+        body: (formatted_number.to_string()),
+        headers: HashMap::from([("Content-Length".to_string(), formatted_number.len().to_string()), ("Content-Type".to_string(), "text/html".to_string())])
+    };
+
+}
+
 fn get_country(request_data:request::Request) -> response::Response {
 
     // Get the Country Code from the Path
@@ -62,6 +84,28 @@ fn get_country(request_data:request::Request) -> response::Response {
 
 }
 
+fn get_branched_format(request_data:request::Request) -> response::Response {
+
+    // Get the Country Name and Phone Number from the Path
+    let request_parts: Vec<&str> = request_data.path.split('/').collect();
+    if request_parts.len() < 4 { return bad_format(); }
+    let country_name:&str = request_parts[2];
+    // if country_name.len() == 0 { return bad_format(); }
+    let phone_number:&str = request_parts[3];
+    if phone_number.len() == 0 { return bad_format(); }
+
+    // Get the Formatted Number
+    let formatted_number = phone::branched_format(country_name, phone_number);
+
+    // Return the Country Name
+    return response::Response {
+        response_code: 200,
+        body: (formatted_number.to_string()),
+        headers: HashMap::from([("Content-Length".to_string(), formatted_number.len().to_string()), ("Content-Type".to_string(), "text/html".to_string())])
+    };
+
+}
+
 fn handle_connection(mut stream: TcpStream) {
 
     let mut buffer = [0; 1024];
@@ -75,6 +119,8 @@ fn handle_connection(mut stream: TcpStream) {
     let response_data:response::Response = match request_intro {
 
         "country" => get_country(request_data),
+        "e164" => get_e164_format(request_data),
+        "format" => get_branched_format(request_data),
         _ => response::Response {
             response_code: 404,
             body: ("Endpoint Not Found".to_string()),

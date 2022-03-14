@@ -53,3 +53,50 @@ pub fn get_country(country_code:&str) -> &str {
     return "";
 
 }
+
+pub fn get_country_code(country_name:&str) -> u32 {
+ 
+    if country_name == "CA" || country_name == "CAN" { return 1; }
+    if country_name == "US" || country_name == "USA" { return 1; }
+
+    return 0;
+
+}
+
+pub fn e164_format(country_name:&str, phone_number:&str) -> String {
+
+    let country_code = get_country_code(country_name);
+
+    if country_code == 0 { return format!("{}", phone_number); }
+
+    return format!("+{}{}", country_code, phone_number);
+
+}
+
+pub fn branched_format(country_name:&str, phone_number:&str) -> String {
+
+    let country_code = get_country_code(country_name);
+    let mut chars = phone_number.chars();
+
+    let formatted_number = match phone_number.len() {
+
+        0 => "".to_owned(),
+        1 => format!("{}", phone_number.chars().nth(0).unwrap()),
+        2 => format!("{}{}", phone_number.chars().nth(0).unwrap(), phone_number.chars().nth(1).unwrap()),
+        3 => format!("({}{}{})", phone_number.chars().nth(0).unwrap(), phone_number.chars().nth(1).unwrap(), phone_number.chars().nth(2).unwrap()),
+        4 => format!("{}{} {}{}", phone_number.chars().nth(0).unwrap(), phone_number.chars().nth(1).unwrap(), phone_number.chars().nth(2).unwrap(), phone_number.chars().nth(3).unwrap()),
+        5 => format!("({}{}{}) {}{}", phone_number.chars().nth(0).unwrap(), phone_number.chars().nth(1).unwrap(), phone_number.chars().nth(2).unwrap(), phone_number.chars().nth(3).unwrap(), phone_number.chars().nth(4).unwrap()),
+        6 => format!("({}{}{}) {}{}{}", phone_number.chars().nth(0).unwrap(), phone_number.chars().nth(1).unwrap(), phone_number.chars().nth(2).unwrap(), phone_number.chars().nth(3).unwrap(), phone_number.chars().nth(4).unwrap(), phone_number.chars().nth(5).unwrap()),
+        7 => format!("({}{}{}) {}{}{} {}", phone_number.chars().nth(0).unwrap(), phone_number.chars().nth(1).unwrap(), phone_number.chars().nth(2).unwrap(), phone_number.chars().nth(3).unwrap(), phone_number.chars().nth(4).unwrap(), phone_number.chars().nth(5).unwrap(), phone_number.chars().nth(6).unwrap()),
+        8 => format!("{}{} {}{} {}{} {}{}", phone_number.chars().nth(0).unwrap(), phone_number.chars().nth(1).unwrap(), phone_number.chars().nth(2).unwrap(), phone_number.chars().nth(3).unwrap(), phone_number.chars().nth(4).unwrap(), phone_number.chars().nth(5).unwrap(), phone_number.chars().nth(6).unwrap(), phone_number.chars().nth(7).unwrap()),
+        9 => format!("({}{}{}) {}{}{} {}{}{}", phone_number.chars().nth(0).unwrap(), phone_number.chars().nth(1).unwrap(), phone_number.chars().nth(2).unwrap(), phone_number.chars().nth(3).unwrap(), phone_number.chars().nth(4).unwrap(), phone_number.chars().nth(5).unwrap(), phone_number.chars().nth(6).unwrap(), phone_number.chars().nth(7).unwrap(), phone_number.chars().nth(8).unwrap()),
+        10 => format!("({}{}{}) {}{}{} {}{}{}{}", phone_number.chars().nth(0).unwrap(), phone_number.chars().nth(1).unwrap(), chars.nth(2).unwrap(), phone_number.chars().nth(3).unwrap(), phone_number.chars().nth(4).unwrap(), phone_number.chars().nth(5).unwrap(), phone_number.chars().nth(6).unwrap(), phone_number.chars().nth(7).unwrap(), phone_number.chars().nth(8).unwrap(), phone_number.chars().nth(9).unwrap()),
+        _ => "".to_owned()
+
+    };
+
+    if country_code == 0 { return formatted_number; }
+
+    return format!("+{} {}", country_code, formatted_number);
+
+}

@@ -10,6 +10,12 @@
 1. **Get Country Code** - `/country/:country_code/`
     - Blah.
 
+1. **Use E164 Formattting for Numbers** - `/e164/:country/:phone_number/`
+    - Blah.
+
+1. **Format Using Standard International Style** - `/format/:country/:phone_number`
+    - Blah.
+
 1. **Performance**
     - The power of the Rust Programming Language enables this module to have sub-millisecond response times. Speed may vary depending on your network connection, but the code itself will never be the performance bottleneck.
 
