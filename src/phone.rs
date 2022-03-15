@@ -70,7 +70,7 @@ pub fn get_nanp_info(phone_number:&str) -> PhoneInfo {
     let area_code_number:u16 = area_code.parse().unwrap();
     let mut number_type:&str = "null";
 
-    if area_code_number >= 0 && area_code_number < 200 { number_type = "system"; }
+    if area_code_number < 200 { number_type = "system"; }
 
     let mut x = 200;
     loop {
