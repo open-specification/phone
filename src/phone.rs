@@ -58,6 +58,7 @@ pub struct PhoneInfo {
 
     pub number_type:String,
     pub area_code:String,
+    // pub valid:bool;
 
 }
 
@@ -86,6 +87,7 @@ pub fn get_nanp_info(phone_number:&str) -> PhoneInfo {
 
     }
 
+    // Check if Valid Phone Number
 
     return PhoneInfo { number_type: number_type.to_string(), area_code: area_code.to_string() };
     
