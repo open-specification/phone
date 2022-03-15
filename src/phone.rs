@@ -54,6 +54,54 @@ pub fn get_country(country_code:&str) -> &str {
 
 }
 
+pub struct PhoneInfo {
+
+    pub number_type:String,
+    pub area_code:String,
+
+}
+
+// Uses the "North American Numbering Plan" system to get information on phone numbers.
+pub fn get_nanp_info(phone_number:&str) -> PhoneInfo {
+
+    if phone_number.len() < 3 { return PhoneInfo { number_type: "null".to_string(), area_code: phone_number.to_string() }; }
+
+    let area_code = &phone_number[0..3];
+    let area_code_number:u16 = area_code.parse().unwrap();
+    let mut number_type:&str = "null";
+
+    if area_code_number >= 0 && area_code_number < 200 { number_type = "system"; }
+
+    let mut x = 200;
+    loop {
+
+        if x > 900 { break; }
+
+        if area_code_number >= x && area_code_number < x + 11 { number_type = "area"; break; }
+        if area_code_number == x + 11 { number_type = "service"; break; }
+        if area_code_number >= x + 12 && area_code_number < x + 20 { number_type = "area"; break; }
+        if area_code_number >= x + 20 && area_code_number < x + 100 { number_type = "area"; break; }
+
+        x = x + 100;
+
+    }
+
+
+    return PhoneInfo { number_type: number_type.to_string(), area_code: area_code.to_string() };
+    
+
+}
+
+pub fn get_general_info(country_name:&str, phone_number:&str) -> PhoneInfo {
+
+    let country_code = get_country_code(country_name);
+
+    if country_code == 1 { return get_nanp_info(phone_number); }
+
+    return PhoneInfo { number_type: "null".to_owned(), area_code: "".to_owned() };
+
+}
+
 pub fn get_country_code(country_name:&str) -> u32 {
  
     if country_name == "CA" || country_name == "CAN" { return 1; }

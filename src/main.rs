@@ -53,6 +53,31 @@ fn get_e164_format(request_data:request::Request) -> response::Response {
 
 }
 
+fn get_info(request_data:request::Request) -> response::Response {
+
+    // Get the Country Name and Phone Number from the Path
+    let request_parts: Vec<&str> = request_data.path.split('/').collect();
+    if request_parts.len() < 4 { return bad_format(); }
+    let country_name:&str = request_parts[2];
+    if country_name.len() == 0 { return bad_format(); }
+    let phone_number:&str = request_parts[3];
+    if phone_number.len() == 0 { return bad_format(); }
+
+    // Get the Phone Info
+    let phone_info = phone::get_general_info(country_name, phone_number);
+
+    // Convert Phone Info to String
+    let phone_json = format!("{{\"type\": \"{}\", \"area\": \"{}\"}}", phone_info.number_type, phone_info.area_code);
+
+    // Return the Response
+    return response::Response {
+        response_code: 200,
+        body: (phone_json.to_string()),
+        headers: HashMap::from([("Content-Length".to_string(), phone_json.len().to_string()), ("Content-Type".to_string(), "application/json".to_string())])
+    };
+
+}
+
 fn get_country(request_data:request::Request) -> response::Response {
 
     // Get the Country Code from the Path
@@ -121,6 +146,7 @@ fn handle_connection(mut stream: TcpStream) {
         "country" => get_country(request_data),
         "e164" => get_e164_format(request_data),
         "format" => get_branched_format(request_data),
+        "info" => get_info(request_data),
         _ => response::Response {
             response_code: 404,
             body: ("Endpoint Not Found".to_string()),
