@@ -105,11 +105,7 @@ fn get_country(request_data:request::Request) -> response::Response {
     }
 
     // Return the Country Name
-    return response::Response {
-        response_code: 200,
-        body: (country_name.to_string()),
-        headers: HashMap::from([("Content-Length".to_string(), country_name.len().to_string()), ("Content-Type".to_string(), "text/html".to_string())])
-    };
+    return okay_response(country_name.to_string(), "text/html");
 
 }
 
@@ -119,7 +115,6 @@ fn get_branched_format(request_data:request::Request) -> response::Response {
     let request_parts: Vec<&str> = request_data.path.split('/').collect();
     if request_parts.len() < 4 { return bad_format(); }
     let country_name:&str = request_parts[2];
-    // if country_name.len() == 0 { return bad_format(); }
     let phone_number:&str = request_parts[3];
     if phone_number.len() == 0 { return bad_format(); }
 
@@ -127,11 +122,7 @@ fn get_branched_format(request_data:request::Request) -> response::Response {
     let formatted_number = phone::branched_format(country_name, phone_number);
 
     // Return the Country Name
-    return response::Response {
-        response_code: 200,
-        body: (formatted_number.to_string()),
-        headers: HashMap::from([("Content-Length".to_string(), formatted_number.len().to_string()), ("Content-Type".to_string(), "text/html".to_string())])
-    };
+    return okay_response(formatted_number.to_string(), "text/html");
 
 }
 
