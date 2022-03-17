@@ -6,6 +6,7 @@ use std::thread;
 
 mod response;
 mod request;
+#[macro_use] mod serializer;
 
 mod phone;
 
@@ -31,6 +32,16 @@ fn bad_format() -> response::Response {
 
 }
 
+fn okay_response(body:String, mime_type:&str) -> response::Response {
+
+    return response::Response {
+        response_code: 200,
+        body: body.to_string(),
+        headers: HashMap::from([("Content-Length".to_string(), body.len().to_string()), ("Content-Type".to_string(), mime_type.to_string()), ("Content-Disposition".to_string(), "inline".to_string())])
+    }
+
+}
+
 fn get_e164_format(request_data:request::Request) -> response::Response {
 
     // Get the Country Name and Phone Number from the Path
@@ -45,11 +56,7 @@ fn get_e164_format(request_data:request::Request) -> response::Response {
     let formatted_number = phone::e164_format(country_name, phone_number);
 
     // Return the Country Name
-    return response::Response {
-        response_code: 200,
-        body: (formatted_number.to_string()),
-        headers: HashMap::from([("Content-Length".to_string(), formatted_number.len().to_string()), ("Content-Type".to_string(), "text/html".to_string())])
-    };
+    return okay_response(formatted_number, "text/html");
 
 }
 
@@ -67,14 +74,11 @@ fn get_info(request_data:request::Request) -> response::Response {
     let phone_info = phone::get_general_info(country_name, phone_number);
 
     // Convert Phone Info to String
-    let phone_json = format!("{{\"type\": \"{}\", \"area\": \"{}\"}}", phone_info.number_type, phone_info.area_code);
+    let content_type = "application/yaml";
+    let phone_serialized = to_serialized!(content_type, phone_info, (number_type, area_code));
 
     // Return the Response
-    return response::Response {
-        response_code: 200,
-        body: (phone_json.to_string()),
-        headers: HashMap::from([("Content-Length".to_string(), phone_json.len().to_string()), ("Content-Type".to_string(), "application/json".to_string())])
-    };
+    return okay_response(phone_serialized, content_type);
 
 }
 
